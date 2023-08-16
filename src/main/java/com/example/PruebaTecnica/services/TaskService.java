@@ -1,37 +1,48 @@
 package com.example.PruebaTecnica.services;
 
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.springframework.transaction.annotation.Transactional;
-
-import org.springframework.stereotype.Repository;
-
+import com.example.PruebaTecnica.Exceptions.NotFoundException;
 import com.example.PruebaTecnica.Models.Task;
-import com.example.PruebaTecnica.interfaces.TaskInterface;
+import com.example.PruebaTecnica.repositories.TaskOperationRepository;
+import java.util.Optional;
 
-@Repository
-@Transactional
-public class TaskService implements TaskInterface {
+@Service
+public class TaskService {
+    private final TaskOperationRepository taskRepository;
 
-    @PersistenceContext
-    EntityManager entityManager;
-
-    @Override
-    public List<Task> getAll() {
-        String query = "FROM Task";
-        return entityManager.createQuery(query).getResultList();
+    @Autowired
+    public TaskService(TaskOperationRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
-    @Override
-    public Task getTask(int id) {
-        System.out.println(id);
-        String query = "FROM Task WHERE id="+id;
-        Task result = (Task) entityManager.createQuery(query).getResultList().get(0);
-        return result;
-       
-        //return (Task) entityManager.createQuery(query).getResultList().get(0);
+    // Método para insertar una nueva tarea en la base de datos
+    public Task insertarNuevaTask(String description, String state) {
+        Task task = new Task(description, state);
+        return taskRepository.save(task);
     }
-    
+
+    public Task updateTask(Long id, String nuevaDescription, String nuevoState) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            task.setDescription(nuevaDescription);
+            task.setState(nuevoState);
+            return taskRepository.save(task);
+        } else {
+            throw new NotFoundException("No se encontró la tarea con ID: " + id);
+        }
+    }
+
+    public void deleteTaskById(Long id) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+
+        if (optionalTask.isPresent()) {
+            taskRepository.delete(optionalTask.get());
+        } else {
+            throw new NotFoundException("No se encontró la tarea con ID: " + id);
+        }
+    }
 }
