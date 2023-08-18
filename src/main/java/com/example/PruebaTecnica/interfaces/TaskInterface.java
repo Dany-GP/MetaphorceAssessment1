@@ -2,7 +2,7 @@ package com.example.PruebaTecnica.interfaces;
 
 import java.util.List;
 
-import com.example.PruebaTecnica.Models.Task;
+import com.example.PruebaTecnica.Models.entities.Task;
 
 public interface TaskInterface {
     List<Task> getAll(); 

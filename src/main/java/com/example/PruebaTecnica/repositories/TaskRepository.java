@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.stereotype.Repository;
 
-import com.example.PruebaTecnica.Models.Task;
+import com.example.PruebaTecnica.Models.entities.Task;
 import com.example.PruebaTecnica.interfaces.TaskInterface;
 
 @Repository
