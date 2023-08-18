@@ -1,4 +1,4 @@
-package com.example.PruebaTecnica.Models;
+package com.example.PruebaTecnica.Models.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
